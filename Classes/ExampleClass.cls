@@ -18,6 +18,7 @@ public with sharing class ExampleClass {
      }
 
 	public void sendEmails() {
+          // Step 1: Declare a list of List<EmailTemplateHandler>.
 		List<EmailTemplateHandler> emailHandlerList = new List<EmailTemplateHandler>();
 		List<String> bccRecipents = new List<String>{(String) UserInfo.getUserId()};
 		Set<Id> queryObjectIds = new Set<Id>();
@@ -27,9 +28,12 @@ public with sharing class ExampleClass {
 		for (InvestmentWrapper invWrapper : InvestmentToUpdate) {
 			queryObjectIds.add(invWrapper.investmentId);
 		}
+
+          // Step 2: Call EmailTemplateHandler.getMergeFields(selectedEmailTemplateName, 'Main Object', queryObjectIds).
 		mergeFields = EmailTemplateHandler.getMergeFields(selectedTemplateName, 'Investment__c', queryObjectIds);
 
 		// For each InvestmentWrapper Create an EmailTemplateHandler object:
+          // Step 3: Loop over your records and create EmailTemplateHandler for each one of them based on the merge fields found in previous step:
 		for (InvestmentWrapper invWrapper : InvestmentToUpdate) {
 			// Build EmailTemplateHandler objects:
 			EmailTemplateHandler eth = new EmailTemplateHandler(invWrapper.contactEmail, invWrapper.contactId , bccRecipents, mergeFields.get(invWrapper.investmentId));
@@ -39,10 +43,12 @@ public with sharing class ExampleClass {
 		}
 		
 		// Create Messaging.SingleEmailMessages from emailHandlerList:
-		List<Messaging.SingleEmailMessage> emails = EmailTemplateHandler.prepareEmails(emailHandlerList, selectedTemplateName, 'ourCrowd Support');
+          // Step 4: Now call EmailTemplateHandler.prepareEmails(emailHandlerList, <EMAIL_TEMPLATE_NAME_HERE>, '<SENDER_NAME_HERE>') with the emailHandlerList.
+		List<Messaging.SingleEmailMessage> emails = EmailTemplateHandler.prepareEmails(emailHandlerList, selectedTemplateName, 'Sender Name');
 
 		try{
 			// Send Emails:
+               // Step 5: Send the emails as a List<Messaging.SendEmailResult> results = Messaging.sendEmail(emails).
 			List<Messaging.SendEmailResult> results = Messaging.sendEmail(emails);
 		}
 		catch(Exception e){
