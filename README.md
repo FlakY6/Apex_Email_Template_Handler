@@ -21,9 +21,9 @@ My solution is using APEX Query in order to find the related merge fields, which
 
 
 ### Steps how to use:
- 1) Declare a list of List<EmailTemplateHandler>.
- 2) Call EmailTemplateHandler.getMergeFields(selectedTemplateName, 'Main Object', queryObjectIds).
- 3) Loop over your records and create EmailTemplateHandler for each one of them based on the merge fields found in previous step.
- 4) Now call EmailTemplateHandler.prepareEmails(emailHandlerList, selectedTemplateName, 'ourCrowd Support') with the emailHandlerList.
- 5) Send the emails as a List<Messaging.SendEmailResult> results = Messaging.sendEmail(emails).
+ 1) Declare a list of ```List<EmailTemplateHandler>```.
+ 2) Call ```EmailTemplateHandler.getMergeFields(selectedTemplateName, 'Main Object', queryObjectIds)```.
+ 3) Loop over your records and create ```EmailTemplateHandler``` for each one of them based on the merge fields found in previous step.
+ 4) Now call ```EmailTemplateHandler.prepareEmails(emailHandlerList, <EMAIL_TEMPLATE_NAME_HERE>, '<SENDER_NAME_HERE>')``` with the emailHandlerList.
+ 5) Send the emails as a ```List<Messaging.SendEmailResult> results = Messaging.sendEmail(emails)```.
  Example can be found here: "FUND_CapitalCallEmails" class, "sendEmails" Method.
