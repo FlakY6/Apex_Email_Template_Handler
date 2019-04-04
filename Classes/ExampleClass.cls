@@ -52,7 +52,6 @@ public with sharing class ExampleClass {
 			List<Messaging.SendEmailResult> results = Messaging.sendEmail(emails);
 		}
 		catch(Exception e){
-			ApexPages.addMessages(e);
 			System.Debug('error: ' + e.getMessage()); 
 		}
 	}
@@ -61,18 +60,16 @@ public with sharing class ExampleClass {
 	public class InvestmentWrapper {
 		public Investment__c Investment {get;set;}
 		public String investmentId {get; set;}
-		public Integer num {get; set;}
 		public Boolean selected {get; set;}
 		public Id contactId {get; set;}
 		public String contactEmail {get; set;}
 
 		InvestmentWrapper(Investment__c inv) {
+			selected = true;
 			Investment = inv;
 			investmentId = inv.Id;
-			selected = true;
-			num = FUND_CapitalCallEmails.num += 1;
-			contactId = inv.Commitment__r.Contact__c;
-			contactEmail = inv.Commitment__r.Contact__r.Email;
+			contactId = inv.Contact__r.Id;
+			contactEmail = inv.Contact__r.Email;
 		}
 	}
 }
