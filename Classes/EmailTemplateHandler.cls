@@ -39,12 +39,13 @@ public with sharing class EmailTemplateHandler {
 		// Merge field can be in Subject/HTMLValue:
 		String templateText = emailTemplate.HtmlValue + ' ' + emailTemplate.Subject;
 		
-		// Find merge fields keys:
+		// Find merge fields keys from template:
 		mergeFieldKeys = getMergeFieldsKeys(templateText);
 
 		// Find merge fields values:
 		mergeFieldsValuesByRecord = getMergeFieldsValues(mergeFieldKeys, mainObject, queryObjectIds);
 
+		// Return Map with each record's key=>value
 		return mergeFieldsValuesByRecord;
 	}
 
