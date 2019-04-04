@@ -8,7 +8,7 @@ If you want to send your contacts email with information from realted Opportunit
 
 I needed a solution that will allow me to use data from realted records, and this is the purpose of this repository.
 
-##Limitations:
+#Limitations:
 My solution is using APEX Query in order to find the related merge fields, which means a few things:
 
 - The solution is limited for 2 levels of related objects relationship, but you can bring data from multiple records (So now you'll be able to bring information from Contact & Opportunity or from Contact & Account etc..).
