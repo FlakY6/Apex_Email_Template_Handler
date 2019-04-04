@@ -1,5 +1,5 @@
 # Apex_Email_Template_Handler
-# Allow using merge fields from related records in Salesforce's email templates.
+Allow using merge fields from related records in Salesforce's email templates.
 
 Salesforce's email templates are a great tool to create generic templates and send them to your contacts, the problem is is that you are limited to only one level of merge fields to use in your template.
 
