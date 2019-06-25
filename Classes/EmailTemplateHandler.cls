@@ -35,6 +35,7 @@ public with sharing class EmailTemplateHandler {
 		EmailTemplate emailTemplate = [SELECT Id, Subject, HtmlValue, Body 
 								 FROM EmailTemplate 
 								 WHERE Name = :emailTemplateName];
+		formulas = new Map<String, List<String>>();
 
 		// Merge field can be in Subject/HTMLValue:
 		String templateText = emailTemplate.HtmlValue + ' ' + emailTemplate.Subject;
@@ -61,6 +62,20 @@ public with sharing class EmailTemplateHandler {
 			if (!mergeFields.contains(body.substring(start, stop))) {
 				mergeFields.add(body.substring(start, stop));
 			}
+
+			// remove this loop substring from main string:
+			body = body.remove(body.substring(start, stop));
+		}
+		
+		// Search for formula calculations in the email template body:
+		while (body.contains('{~')) {
+			start = body.indexOf('{~');
+			stop = body.indexOf('~}') + 2;
+			String mergeFormula = body.substring(start, stop).remove('{~').remove('~}');
+			List<String> formula = mergeFormula.split('!');
+			
+			// Save Formula parts in map:
+			formulas.put(body.substring(start, stop), formula);
 
 			// remove this loop substring from main string:
 			body = body.remove(body.substring(start, stop));
@@ -124,6 +139,7 @@ public with sharing class EmailTemplateHandler {
 				mergeFields.put(key, value);
 			}
 			mergeFields = addGenericValues(mergeFields);
+			mergeFields = addFormulaValues(mergeFields);
 			mergeFieldsValuesByRecord.put(record.Id, mergeFields);
 		}
 
@@ -153,6 +169,48 @@ public with sharing class EmailTemplateHandler {
 		mergeFields.put('#Current_Month#', String.valueOf(Date.today().Month()));
 		// Add Today's Day:
 		mergeFields.put('#Current_Day#', String.valueOf(Date.today().Day()));
+
+		return mergeFields;
+	}
+
+	// Add formula calculations for each record.
+	// Inside the Email Template, generic values must be wrraped with '{~'.
+	// Operators/field should be seperated with '!'.
+	// example: {~example!-!field~}.
+	private static Map<String, String> addFormulaValues(Map<String, String> mergeFields) {
+		Set<String> Operators = new Set<String>{'-','+','*','/'};
+
+		// For each formula:
+		for (String formulaKey : formulas.keySet()) {
+			Decimal sum = 0;
+			String lastOperator = '+';
+			for (String key : formulas.get(formulaKey)) {
+				// Number:
+				if (!Operators.contains(key)) {
+					String n = mergeFields.get('{!'+key+'!}').remove(',');
+
+					if (lastOperator == '+') {
+						sum += Decimal.valueOf(n);
+					}
+					else if (lastOperator == '-') {
+						sum -= Decimal.valueOf(n);
+					}
+					else if (lastOperator == '*') {
+						sum = sum * Decimal.valueOf(n);
+					}
+					else if (lastOperator == '/') {
+						sum = sum / Decimal.valueOf(n);
+					}
+				}
+				// Operator:
+				else{
+					lastOperator = key;
+				}
+			}
+
+			// Add formula value as mergeField:
+			mergeFields.put(formulaKey, formatDecimals(String.valueOf(sum)));
+		}
 
 		return mergeFields;
 	}
