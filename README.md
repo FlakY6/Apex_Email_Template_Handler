@@ -45,7 +45,7 @@ First, deploy EmailTemplateHandler Class to your Org.
 
  ### What's new?
 
- #####25/06/2019 
+ ##### 25/06/2019 
  Allow calculations inside an email template.
  Formula format needs to be wrapped like this : {~fieldName!-!otherfieldName~}
  we use the '{~' and '~}' so we could find the formula sentence inside the email template, and the '!' inside of it, so we could break the formula to its pieces: [fieldName,-,fieldName].
