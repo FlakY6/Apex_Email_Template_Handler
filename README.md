@@ -41,3 +41,12 @@ First, deploy EmailTemplateHandler Class to your Org.
  5) Send the emails as a ```List<Messaging.SendEmailResult> results = Messaging.sendEmail(emails)```.
  
  Example can be found here: "ExampleClass.cls" class, "sendEmails" Method.
+
+
+ ### What's new?
+
+ #####25/06/2019 
+ Allow calculations inside an email template.
+ Formula format needs to be wrapped like this : {~fieldName!-!otherfieldName~}
+ we use the '{~' and '~}' so we could find the formula sentence inside the email template, and the '!' inside of it, so we could break the formula to its pieces: [fieldName,-,fieldName].
+ after spliting the formula field, we will calculate the fields based on the operators given and will put the result as a new merge field under the 'mergeFields' list.
